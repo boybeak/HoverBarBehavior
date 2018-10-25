@@ -4,23 +4,21 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.*;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.*;
 import android.view.animation.LinearInterpolator;
 import android.widget.PopupWindow;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FamPopupWindow extends PopupWindow {
@@ -32,11 +30,13 @@ public class FamPopupWindow extends PopupWindow {
     private View anchorView;
     private LinearLayoutCompat container;
     private int iconSize, offsetY;
+    private List<FamItem> famItems;
 
     private int animDuration = 0;
     private AnimatorSet animatorSet;
 
     private OnItemSelectedListener onItemSelectedListener;
+    private OnCreatedListener onCreatedListener;
 
     public FamPopupWindow(@NonNull Context context) {
         super(context);
@@ -60,20 +60,20 @@ public class FamPopupWindow extends PopupWindow {
 
     private void init(@NonNull Context context) {
         float density = context.getResources().getDisplayMetrics().density;
-        iconSize = (int) (density * 48);
-        offsetY = -(int)(density * 8);
+        iconSize = Utils.dpToPixel(context, 48);
+        offsetY = -Utils.dpToPixel(context, 8);
         animDuration = context.getResources().getInteger(android.R.integer.config_shortAnimTime);
-//        animDuration = 4000;
         setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         setFocusable(true);
+
     }
 
-    public void setDimView(ViewGroup dimView) {
+    public FamPopupWindow setDimView(ViewGroup dimView) {
         this.dimView = dimView;
+        return this;
     }
 
     public void show(FloatingActionButton fab, List<FamItem> items) {
-
         if (animatorSet != null && animatorSet.isRunning()) {
             return;
         }
@@ -84,7 +84,7 @@ public class FamPopupWindow extends PopupWindow {
         setContentView(container);
 
         this.anchorView = fab;
-        LayoutInflater inflater = LayoutInflater.from(fab.getContext());
+        this.famItems = items;
         container.removeAllViews();
 
         animatorSet = new AnimatorSet();
@@ -94,9 +94,9 @@ public class FamPopupWindow extends PopupWindow {
         final int size = items.size();
         for (int i = 0; i < size; i++) {
             final FamItem item = items.get(i);
-            View child = inflater.inflate(R.layout.layout_fam_item, container, false);
-            FloatingActionButton icon = child.findViewById(R.id.fam_item_icon);
-            AppCompatTextView title = child.findViewById(R.id.fam_item_title);
+            FamItemView child = new FamItemView(fab.getContext());
+            FloatingActionButton icon = child.iconFab();
+            AppCompatTextView title = child.titleTextView();
             icon.setImageDrawable(item.getIcon());
             title.setText(item.getTitle());
             if (TextUtils.isEmpty(item.getTitle())) {
@@ -116,7 +116,10 @@ public class FamPopupWindow extends PopupWindow {
                 }
             });
 
-            container.addView(child);
+            LinearLayoutCompat.LayoutParams p = new LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            p.bottomMargin = Utils.dpToPixel(fab.getContext(), 12);
+            container.addView(child, p);
 
             child.setAlpha(0);
             child.measure(0, 0);
@@ -138,11 +141,26 @@ public class FamPopupWindow extends PopupWindow {
         container.measure(0, 0);
         setWidth(container.getMeasuredWidth());
         setHeight(container.getMeasuredHeight());
-        showAsDropDown(fab, (iconSize - fab.getWidth())/2, offsetY, Gravity.END|Gravity.TOP);
+        showAsDropDown(fab, (iconSize - fab.getWidth()) / 2, offsetY, Gravity.END | Gravity.TOP);
         if (dimView != null) {
             applyDim();
         }
         animatorSet.setInterpolator(new LinearInterpolator());
+        animatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                animation.removeAllListeners();
+                if (onCreatedListener != null) {
+                    List<FamItemView> itemViews = new ArrayList<>();
+                    for (int i = 0; i < container.getChildCount(); i++) {
+                        FamItemView itemView = (FamItemView)container.getChildAt(i);
+                        itemViews.add(itemView);
+                    }
+                    onCreatedListener.onCreated(famItems, itemViews);
+                    itemViews.clear();
+                }
+            }
+        });
         animatorSet.start();
     }
 
@@ -156,8 +174,8 @@ public class FamPopupWindow extends PopupWindow {
         AnimatorSet.Builder ab = animatorSet.play(fabRotate);
         final int size = container.getChildCount();
         for (int i = 0; i < size; i++) {
-            View child = container.getChildAt(i);
-            FloatingActionButton icon = child.findViewById(R.id.fam_item_icon);
+            FamItemView child = (FamItemView)container.getChildAt(i);
+            FloatingActionButton icon = child.iconFab();
             ObjectAnimator oaa = ObjectAnimator.ofFloat(child, "alpha", child.getAlpha(), 0f);
             ObjectAnimator oasx = ObjectAnimator.ofFloat(icon, "scaleX", icon.getScaleX(), 0f);
             ObjectAnimator oasy = ObjectAnimator.ofFloat(icon, "scaleY", icon.getScaleY(), 0f);
@@ -171,10 +189,7 @@ public class FamPopupWindow extends PopupWindow {
             @Override
             public void onAnimationEnd(Animator animation) {
                 animation.removeAllListeners();
-                FamPopupWindow.super.dismiss();
-
-                container = null;
-                anchorView = null;
+                doDismiss();
             }
         });
         animatorSet.setInterpolator(new LinearInterpolator());
@@ -183,6 +198,17 @@ public class FamPopupWindow extends PopupWindow {
         if (dimView != null) {
             clearDim();
         }
+    }
+
+    private void doDismiss() {
+        FamPopupWindow.super.dismiss();
+
+        container = null;
+        anchorView = null;
+        famItems = null;
+
+        onItemSelectedListener = null;
+        onCreatedListener = null;
     }
 
 
@@ -213,12 +239,22 @@ public class FamPopupWindow extends PopupWindow {
 
     }
 
-    public void setOnItemSelectedListener(OnItemSelectedListener onItemSelectedListener) {
+    public FamPopupWindow setOnItemSelectedListener(OnItemSelectedListener onItemSelectedListener) {
         this.onItemSelectedListener = onItemSelectedListener;
+        return this;
+    }
+
+    public FamPopupWindow setOnCreatedListener(OnCreatedListener onCreatedListener) {
+        this.onCreatedListener = onCreatedListener;
+        return this;
     }
 
     public interface OnItemSelectedListener {
         boolean onItemSelected(FamItem item);
+    }
+
+    public interface OnCreatedListener {
+        void onCreated(List<FamItem> famItems, List<FamItemView> famItemViews);
     }
 
 }

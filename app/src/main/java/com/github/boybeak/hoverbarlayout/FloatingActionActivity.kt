@@ -27,9 +27,15 @@ class FloatingActionActivity : AppCompatActivity() {
                 FamItem(2, "Faheem Ahmad Khan", d),
                 FamItem(4, "Ankit Gupta", d)
             )
-            val fam = FamPopupWindow(this)
-            fam.setDimView(content)
-            fam.show(fab, items)
+            FamPopupWindow(this)
+                .setDimView(content)
+                .setOnItemSelectedListener {item ->
+                    when(item.id) {
+
+                    }
+                    true
+                }
+                .show(fab, items)
         }
 
     }
