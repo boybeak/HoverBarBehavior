@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/HoverBarBehavior.iml" filepath="$PROJECT_DIR$/HoverBarBehavior.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hoverbarlayout/hoverbarlayout.iml" filepath="$PROJECT_DIR$/hoverbarlayout/hoverbarlayout.iml" />
+    </modules>
+  </component>
+</project>
