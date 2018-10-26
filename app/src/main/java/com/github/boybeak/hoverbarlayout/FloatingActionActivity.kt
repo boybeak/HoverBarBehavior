@@ -20,13 +20,13 @@ class FloatingActionActivity : AppCompatActivity() {
         fab.setOnClickListener {
             fam = FloatingActionMenu(this)
                 .setDimView(content)
-                .showTitle(true)
+                .showTitle(false)
                 .fullyIcon(false)
                 .anchorView(fab)
                 .parent(coordinator)
                 .inflate(R.menu.menu_demo)
                 .setOnCreatedListener { designMenu, famItemViews ->
-                    /*famItemViews.forEachIndexed { index, famItemView ->
+                    /*famItemViews.forEachIndexed { index, famItemView ->git
                         GlideApp.with(famItemView)
                             .load(avatars[index])
                             .apply(RequestOptions.circleCropTransform())

@@ -63,7 +63,7 @@ public class FloatingActionMenu extends DimPopupWindow {
 
     private void init(@NonNull Context context) {
         iconSize = Utils.dpToPixel(context, 48);
-        offsetY = -Utils.dpToPixel(context, 8);
+        offsetY = Utils.dpToPixel(context, 4);
 //        animDuration = context.getResources().getInteger(android.R.integer.config_mediumAnimTime);
         setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         setFocusable(true);
@@ -141,7 +141,7 @@ public class FloatingActionMenu extends DimPopupWindow {
 
             LinearLayoutCompat.LayoutParams p = new LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
-            p.bottomMargin = Utils.dpToPixel(anchorView.getContext(), 12);
+            p.bottomMargin = Utils.dpToPixel(anchorView.getContext(), 8);
             container.addView(child, p);
 
             child.setAlpha(0);
@@ -169,7 +169,7 @@ public class FloatingActionMenu extends DimPopupWindow {
         }
 
         int x = parent.getWidth() - anchorView.getRight() + (anchorView.getWidth() - iconSize) / 2;
-        int y = parent.getHeight() - anchorView.getTop() + anchorView.getHeight();
+        int y = parent.getHeight() - anchorView.getTop() + anchorView.getHeight() + offsetY;
         showAtLocation(parent, Gravity.END | Gravity.BOTTOM, x, y);
 
         if (isDimEnable()) {
