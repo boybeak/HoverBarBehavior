@@ -1,4 +1,4 @@
-package com.github.boybeak.hoverbarlayout;
+package com.github.boybeak.design;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

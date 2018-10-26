@@ -4,7 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/HoverBarBehavior.iml" filepath="$PROJECT_DIR$/HoverBarBehavior.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/hoverbarlayout/hoverbarlayout.iml" filepath="$PROJECT_DIR$/hoverbarlayout/hoverbarlayout.iml" />
+      <module fileurl="file://$PROJECT_DIR$/design/design.iml" filepath="$PROJECT_DIR$/design/design.iml" />
     </modules>
   </component>
 </project>

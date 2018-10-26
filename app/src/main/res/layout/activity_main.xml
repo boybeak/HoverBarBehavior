@@ -12,7 +12,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@android:color/darker_gray"
-            app:layout_behavior="com.github.boybeak.hoverbarlayout.HoverBarBehavior">
+            app:layout_behavior="com.github.boybeak.design.HoverBarBehavior">
         <android.support.v7.widget.Toolbar
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
