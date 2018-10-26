@@ -16,27 +16,18 @@ class FloatingActionActivity : AppCompatActivity() {
         setContentView(R.layout.activity_floating_action)
 
         fab.setOnClickListener {
-            val famPW = FloatingActionMenu(this)
+            FloatingActionMenu(this)
                 .setDimView(content)
                 .setAnchorView(fab)
                 .inflate(R.menu.menu_demo)
                 .setOnCreatedListener { designMenu, famItemViews ->
-                    /*famItemViews.forEachIndexed { index, famItemView ->
-                        (famItemView.iconFab() as ImageView).scaleType = ImageView.ScaleType.CENTER_CROP
-                        famItemView.setPadding(0, 0, 0, 0)
-                        GlideApp.with(it)
-                            .load(avatars[index])
-                            .apply(RequestOptions.circleCropTransform())
-                            .into(famItemView.iconFab())
-                    }*/
                 }
                 .setOnItemSelectedListener {item ->
                     when(item.itemId) {
 
                     }
                     true
-                }
-            famPW.show()
+                }.show()
 
         }
 
