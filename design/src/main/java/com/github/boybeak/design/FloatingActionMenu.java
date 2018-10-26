@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.MenuRes;
@@ -13,8 +14,8 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.*;
-import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.*;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
@@ -26,6 +27,7 @@ public class FloatingActionMenu extends DimPopupWindow {
 
     private static final String TAG = FloatingActionMenu.class.getSimpleName();
 
+    private ViewGroup parent;
     private View anchorView;
     private LinearLayoutCompat container;
     private int iconSize, offsetY;
@@ -33,6 +35,8 @@ public class FloatingActionMenu extends DimPopupWindow {
 
     private int animDuration = 240;
     private AnimatorSet animatorSet;
+
+    private boolean showTitle, fullyIcon;
 
     private OnItemSelectedListener onItemSelectedListener;
     private OnCreatedListener onCreatedListener;
@@ -66,8 +70,26 @@ public class FloatingActionMenu extends DimPopupWindow {
 
     }
 
-    public FloatingActionMenu setAnchorView (FloatingActionButton fab) {
+    public FloatingActionMenu showTitle(boolean showTitle) {
+        this.showTitle = showTitle;
+        return this;
+    }
+
+    public FloatingActionMenu fullyIcon(boolean fullyIcon) {
+        this.fullyIcon = fullyIcon;
+        return this;
+    }
+
+    public FloatingActionMenu anchorView (FloatingActionButton fab) {
         this.anchorView = fab;
+        if (parent == null) {
+            parent((ViewGroup) fab.getParent());
+        }
+        return this;
+    }
+
+    public FloatingActionMenu parent (ViewGroup parent) {
+        this.parent = parent;
         return this;
     }
 
@@ -101,17 +123,11 @@ public class FloatingActionMenu extends DimPopupWindow {
         final int size = designMenu.size();
         for (int i = 0; i < size; i++) {
             final DesignMenuItem item = designMenu.getItem(i);
-            FamItemView child = new FamItemView(anchorView.getContext());
+            FamItemView child = new FamItemView(anchorView.getContext(), showTitle, fullyIcon);
             FloatingActionButton icon = child.iconFab();
             AppCompatTextView title = child.titleTextView();
             icon.setImageDrawable(item.getIcon());
             title.setText(item.getTitle());
-            if (TextUtils.isEmpty(item.getTitle())) {
-                title.setVisibility(View.GONE);
-            } else {
-                title.setVisibility(View.VISIBLE);
-                title.setText(item.getTitle());
-            }
             child.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -152,8 +168,11 @@ public class FloatingActionMenu extends DimPopupWindow {
             return;
         }
 
-        showAsDropDown(anchorView, (iconSize - anchorView.getWidth()) / 2, offsetY, Gravity.END | Gravity.TOP);
-        if (isDimable()) {
+        int x = parent.getWidth() - anchorView.getRight() + (anchorView.getWidth() - iconSize) / 2;
+        int y = parent.getHeight() - anchorView.getTop() + anchorView.getHeight();
+        showAtLocation(parent, Gravity.END | Gravity.BOTTOM, x, y);
+
+        if (isDimEnable()) {
             applyDim();
         }
 
@@ -232,7 +251,7 @@ public class FloatingActionMenu extends DimPopupWindow {
         animatorSet.setInterpolator(new LinearInterpolator());
         animatorSet.start();
 
-        if (isDimable()) {
+        if (isDimEnable()) {
             clearDim();
         }
     }
@@ -242,6 +261,7 @@ public class FloatingActionMenu extends DimPopupWindow {
 
         container = null;
         anchorView = null;
+        parent = null;
         designMenu = null;
 
         onItemSelectedListener = null;

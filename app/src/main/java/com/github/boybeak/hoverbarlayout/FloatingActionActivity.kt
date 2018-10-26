@@ -11,25 +11,38 @@ class FloatingActionActivity : AppCompatActivity() {
 
     private val avatars = arrayOf(R.drawable.avatar1, R.drawable.avatar2, R.drawable.avatar3)
 
+    private var fam: FloatingActionMenu? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_floating_action)
 
         fab.setOnClickListener {
-            FloatingActionMenu(this)
+            fam = FloatingActionMenu(this)
                 .setDimView(content)
-                .setAnchorView(fab)
+                .showTitle(true)
+                .fullyIcon(false)
+                .anchorView(fab)
+                .parent(coordinator)
                 .inflate(R.menu.menu_demo)
                 .setOnCreatedListener { designMenu, famItemViews ->
+                    /*famItemViews.forEachIndexed { index, famItemView ->
+                        GlideApp.with(famItemView)
+                            .load(avatars[index])
+                            .apply(RequestOptions.circleCropTransform())
+                            .into(famItemView.iconFab())
+                    }*/
                 }
                 .setOnItemSelectedListener {item ->
                     when(item.itemId) {
 
                     }
                     true
-                }.show()
+                }
+            fam?.show()
 
         }
 
     }
+
 }
