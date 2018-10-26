@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -27,7 +28,7 @@ public class FamPopupWindow extends DimPopupWindow {
     private View anchorView;
     private LinearLayoutCompat container;
     private int iconSize, offsetY;
-    private List<FamItem> famItems;
+    private DesignMenu designMenu;
 
     private int animDuration = 240;
     private AnimatorSet animatorSet;
@@ -69,18 +70,36 @@ public class FamPopupWindow extends DimPopupWindow {
         return this;
     }
 
-    public FamPopupWindow setFamItems(List<FamItem> items) {
+    public FamPopupWindow inflate(@MenuRes int menuRes) {
         if (anchorView == null) {
-            throw new IllegalStateException("call setAnchorView before setFamItems");
+            throw new IllegalStateException("call setAnchorView before setDesignMenuItems");
         }
-        this.famItems = items;
+        designMenu = new DesignMenu(anchorView.getContext());
+        new MenuInflater(anchorView.getContext()).inflate(menuRes, designMenu);
+        onMenuCreated();
+        return this;
+    }
+
+    public FamPopupWindow setItems(List<DesignMenuItem> items) {
+        if (anchorView == null) {
+            throw new IllegalStateException("call setAnchorView before setDesignMenuItems");
+        }
+        designMenu = new DesignMenu(anchorView.getContext());
+        for (DesignMenuItem item : items) {
+            designMenu.add(item);
+        }
+        onMenuCreated();
+        return this;
+    }
+
+    private void onMenuCreated() {
         container = new LinearLayoutCompat(anchorView.getContext());
         container.setOrientation(LinearLayoutCompat.VERTICAL);
         container.setGravity(Gravity.END|Gravity.BOTTOM);
 
-        final int size = famItems.size();
+        final int size = designMenu.size();
         for (int i = 0; i < size; i++) {
-            final FamItem item = famItems.get(i);
+            final DesignMenuItem item = designMenu.getItem(i);
             FamItemView child = new FamItemView(anchorView.getContext());
             FloatingActionButton icon = child.iconFab();
             AppCompatTextView title = child.titleTextView();
@@ -122,12 +141,11 @@ public class FamPopupWindow extends DimPopupWindow {
         setHeight(container.getMeasuredHeight());
 
         setContentView(container);
-        return this;
     }
 
     public void show() {
         if (container == null) {
-            throw new IllegalStateException("call setFamItems before show");
+            throw new IllegalStateException("call setDesignMenuItems before show");
         }
         if (animatorSet != null && animatorSet.isRunning()) {
             return;
@@ -167,7 +185,7 @@ public class FamPopupWindow extends DimPopupWindow {
                         FamItemView itemView = (FamItemView)container.getChildAt(i);
                         itemViews.add(itemView);
                     }
-                    onCreatedListener.onCreated(famItems, itemViews);
+                    onCreatedListener.onCreated(designMenu, itemViews);
                     itemViews.clear();
 
                 }
@@ -223,7 +241,7 @@ public class FamPopupWindow extends DimPopupWindow {
 
         container = null;
         anchorView = null;
-        famItems = null;
+        designMenu = null;
 
         onItemSelectedListener = null;
         onCreatedListener = null;
@@ -240,11 +258,11 @@ public class FamPopupWindow extends DimPopupWindow {
     }
 
     public interface OnItemSelectedListener {
-        boolean onItemSelected(FamItem item);
+        boolean onItemSelected(DesignMenuItem item);
     }
 
     public interface OnCreatedListener {
-        void onCreated(List<FamItem> famItems, List<FamItemView> famItemViews);
+        void onCreated(DesignMenu designMenu, List<FamItemView> famItemViews);
     }
 
 }
