@@ -1,7 +1,9 @@
 ## HoverBarLayout
 
-![demo](https://github.com/boybeak/HoverBarBehavior/blob/master/demo.gif)
+![demo](https://github.com/boybeak/HoverBarBehavior/blob/master/1.gif)
 
 
 
-## FamP
+## FloatingActionMenu
+
+![demo](https://github.com/boybeak/HoverBarBehavior/blob/master/2.gif)

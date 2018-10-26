@@ -22,9 +22,9 @@ import android.view.animation.LinearInterpolator;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FamPopupWindow extends DimPopupWindow {
+public class FloatingActionMenu extends DimPopupWindow {
 
-    private static final String TAG = FamPopupWindow.class.getSimpleName();
+    private static final String TAG = FloatingActionMenu.class.getSimpleName();
 
     private View anchorView;
     private LinearLayoutCompat container;
@@ -37,41 +37,41 @@ public class FamPopupWindow extends DimPopupWindow {
     private OnItemSelectedListener onItemSelectedListener;
     private OnCreatedListener onCreatedListener;
 
-    public FamPopupWindow(@NonNull Context context) {
+    public FloatingActionMenu(@NonNull Context context) {
         super(context);
         init(context);
     }
 
-    public FamPopupWindow(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public FloatingActionMenu(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public FamPopupWindow(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public FloatingActionMenu(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
 
-    public FamPopupWindow(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public FloatingActionMenu(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(context);
     }
 
     private void init(@NonNull Context context) {
         iconSize = Utils.dpToPixel(context, 48);
-        offsetY = Utils.dpToPixel(context, 0);
+        offsetY = -Utils.dpToPixel(context, 8);
 //        animDuration = context.getResources().getInteger(android.R.integer.config_mediumAnimTime);
         setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         setFocusable(true);
 
     }
 
-    public FamPopupWindow setAnchorView (FloatingActionButton fab) {
+    public FloatingActionMenu setAnchorView (FloatingActionButton fab) {
         this.anchorView = fab;
         return this;
     }
 
-    public FamPopupWindow inflate(@MenuRes int menuRes) {
+    public FloatingActionMenu inflate(@MenuRes int menuRes) {
         if (anchorView == null) {
             throw new IllegalStateException("call setAnchorView before setDesignMenuItems");
         }
@@ -81,7 +81,7 @@ public class FamPopupWindow extends DimPopupWindow {
         return this;
     }
 
-    public FamPopupWindow setItems(List<DesignMenuItem> items) {
+    public FloatingActionMenu setItems(List<DesignMenuItem> items) {
         if (anchorView == null) {
             throw new IllegalStateException("call setAnchorView before setDesignMenuItems");
         }
@@ -196,7 +196,7 @@ public class FamPopupWindow extends DimPopupWindow {
     }
 
     @Override
-    public FamPopupWindow setDimView(ViewGroup dimView) {
+    public FloatingActionMenu setDimView(ViewGroup dimView) {
         super.setDimView(dimView);
         return this;
     }
@@ -238,7 +238,7 @@ public class FamPopupWindow extends DimPopupWindow {
     }
 
     private void doDismiss() {
-        FamPopupWindow.super.dismiss();
+        FloatingActionMenu.super.dismiss();
 
         container = null;
         anchorView = null;
@@ -269,12 +269,12 @@ public class FamPopupWindow extends DimPopupWindow {
 //        super.setContentView(contentView);
     }
 
-    public FamPopupWindow setOnItemSelectedListener(OnItemSelectedListener onItemSelectedListener) {
+    public FloatingActionMenu setOnItemSelectedListener(OnItemSelectedListener onItemSelectedListener) {
         this.onItemSelectedListener = onItemSelectedListener;
         return this;
     }
 
-    public FamPopupWindow setOnCreatedListener(OnCreatedListener onCreatedListener) {
+    public FloatingActionMenu setOnCreatedListener(OnCreatedListener onCreatedListener) {
         this.onCreatedListener = onCreatedListener;
         return this;
     }

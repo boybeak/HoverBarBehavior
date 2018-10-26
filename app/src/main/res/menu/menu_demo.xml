@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/demo" android:title="Sss" android:icon="@mipmap/ic_launcher"/>
+    <item android:id="@+id/demo1" android:title="Text" android:icon="@drawable/ic_format_color_text"/>
+    <item android:id="@+id/demo2" android:title="Camera" android:icon="@drawable/ic_camera"/>
+    <item android:id="@+id/demo3" android:title="Gallery" android:icon="@drawable/ic_folder_image"/>
 </menu>
