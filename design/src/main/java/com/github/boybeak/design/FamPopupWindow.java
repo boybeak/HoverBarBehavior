@@ -14,8 +14,6 @@ import android.support.v7.widget.*;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.*;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 
@@ -31,7 +29,7 @@ public class FamPopupWindow extends DimPopupWindow {
     private int iconSize, offsetY;
     private List<FamItem> famItems;
 
-    private int animDuration = 0;
+    private int animDuration = 240;
     private AnimatorSet animatorSet;
 
     private OnItemSelectedListener onItemSelectedListener;
@@ -59,8 +57,8 @@ public class FamPopupWindow extends DimPopupWindow {
 
     private void init(@NonNull Context context) {
         iconSize = Utils.dpToPixel(context, 48);
-        offsetY = -Utils.dpToPixel(context, 8);
-        animDuration = context.getResources().getInteger(android.R.integer.config_shortAnimTime);
+        offsetY = Utils.dpToPixel(context, 0);
+//        animDuration = context.getResources().getInteger(android.R.integer.config_mediumAnimTime);
         setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         setFocusable(true);
 
@@ -145,13 +143,13 @@ public class FamPopupWindow extends DimPopupWindow {
         AnimatorSet.Builder ab = animatorSet.play(fabRotate);
 
         final int size = container.getChildCount();
-        for (int i = 0; i < size; i++) {
+        for (int i = size - 1; i >= 0; i--) {
             FamItemView child = (FamItemView)container.getChildAt(i);
             FloatingActionButton icon = child.iconFab();
             ObjectAnimator oaa = ObjectAnimator.ofFloat(child, "alpha", child.getAlpha(), 1f);
             ObjectAnimator oasx = ObjectAnimator.ofFloat(icon, "scaleX", icon.getScaleX(), 1f);
             ObjectAnimator oasy = ObjectAnimator.ofFloat(icon, "scaleY", icon.getScaleY(), 1f);
-            int delay = animDuration * (size - i - 1) / size;
+            int delay = animDuration * (size - i) / size;
             oaa.setDuration(animDuration).setStartDelay(delay);
             oasx.setDuration(animDuration).setStartDelay(delay);
             oasy.setDuration(animDuration).setStartDelay(delay);
