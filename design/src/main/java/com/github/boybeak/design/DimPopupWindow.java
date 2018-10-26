@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.RestrictTo;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.view.ViewGroupOverlay;
@@ -82,6 +83,6 @@ public class DimPopupWindow extends PopupWindow {
             }
         });
         oa.setDuration(animDuration).start();
-
     }
+
 }

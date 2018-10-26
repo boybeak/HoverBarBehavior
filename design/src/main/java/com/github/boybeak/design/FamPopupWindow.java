@@ -10,6 +10,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.*;
 import android.text.TextUtils;
@@ -137,10 +138,10 @@ public class FamPopupWindow extends DimPopupWindow {
         }
 
         container.measure(0, 0);
-        setWidth(container.getMeasuredWidth());
-        setHeight(container.getMeasuredHeight());
+        super.setWidth(container.getMeasuredWidth());
+        super.setHeight(container.getMeasuredHeight());
 
-        setContentView(container);
+        super.setContentView(container);
     }
 
     public void show() {
@@ -245,6 +246,27 @@ public class FamPopupWindow extends DimPopupWindow {
 
         onItemSelectedListener = null;
         onCreatedListener = null;
+    }
+
+    @Override
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    public void setWidth(int width) {
+        throw new RuntimeException("Don't call this!!");
+//        super.setWidth(width);
+    }
+
+    @Override
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    public void setHeight(int height) {
+        throw new RuntimeException("Don't call this!!");
+//        super.setHeight(height);
+    }
+
+    @Override
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    public void setContentView(View contentView) {
+        throw new RuntimeException("Don't call this!!");
+//        super.setContentView(contentView);
     }
 
     public FamPopupWindow setOnItemSelectedListener(OnItemSelectedListener onItemSelectedListener) {
